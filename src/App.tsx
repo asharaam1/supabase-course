@@ -154,46 +154,78 @@ function TaskManager({ session }: { session: Session }) {
   console.log(tasks);
 
   return (
-    <div style={{
-      maxWidth: "90%",
-      margin: "0 auto",
-      padding: "1rem",
-      backgroundColor: "#f8f9fa",
-      minHeight: "100vh"
-    }}>
-      <h2 style={{
-        textAlign: "center",
-        color: "#2c3e50",
-        marginBottom: "1.5rem"
-      }}>
+    <div
+      style={{
+        maxWidth: "90%",
+        margin: "0 auto",
+        padding: "1rem",
+        backgroundColor: "#f8f9fa",
+        minHeight: "100vh",
+      }}
+    >
+      <h2
+        style={{
+          textAlign: "center",
+          color: "#2c3e50",
+          marginBottom: "1.5rem",
+        }}
+      >
         Task Manager
       </h2>
 
       {/* Form to add a new task */}
-      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
-        <input
-          type="text"
-          placeholder="Task Title"
-          onChange={(e) =>
-            setNewTask((prev) => ({ ...prev, title: e.target.value }))
-          }
-          style={{ width: "100%", marginBottom: "0.5rem", padding: "0.5rem" }}
-        />
-        <textarea
-          placeholder="Task Description"
-          onChange={(e) =>
-            setNewTask((prev) => ({ ...prev, description: e.target.value }))
-          }
-          style={{ width: "100%", marginBottom: "0.5rem", padding: "0.5rem" }}
-        />
+      <div
+        style={{
+          border: "2px solid black",
+          borderRadius: "20px",
+          padding: "20px",
+          marginBottom: "1rem",
+        }}
+      >
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Task Title"
+            onChange={(e) =>
+              setNewTask((prev) => ({ ...prev, title: e.target.value }))
+            }
+            style={{
+              width: "100%",
+              marginBottom: "0.5rem",
+              padding: "0.5rem",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              boxSizing: "border-box",
+            }}
+          />
+          <textarea
+            placeholder="Task Description"
+            onChange={(e) =>
+              setNewTask((prev) => ({ ...prev, description: e.target.value }))
+            }
+            style={{
+              width: "100%",
+              marginBottom: "0.5rem",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              minHeight: "80px",
+              resize: "vertical",
+              boxSizing: "border-box",
+              padding: "0.5rem",
+            }}
+          />
 
-        <input type="file" accept="image/*" onChange={handleFileChange} />
+          <input type="file" accept="image/*" onChange={handleFileChange} />
 
-        <button type="submit" disabled={isUploading} style={{ padding: "0.5rem 1rem" }}>
-          {isUploading ? "Adding Task..." : "Add Task"}
-        </button>
-      </form>
-
+          <button
+            type="submit"
+            disabled={isUploading}
+            style={{ padding: "0.5rem 1rem" }}
+          >
+            {isUploading ? "Adding Task..." : "Add Task"}
+          </button>
+        </form>
+      </div>
       {/* List of Tasks */}
       <ul style={{ listStyle: "none", padding: 0 }}>
         {tasks.map((task, key) => (
@@ -209,7 +241,13 @@ function TaskManager({ session }: { session: Session }) {
             <div>
               <h3>{task.title}</h3>
               <p>{task.description}</p>
-              {task.image_url && <img src={task.image_url} alt="Task image" style={{ height: 70 }} />}
+              {task.image_url && (
+                <img
+                  src={task.image_url}
+                  alt="Task image"
+                  style={{ height: 70 }}
+                />
+              )}
               <div>
                 <textarea
                   placeholder="Updated description..."
