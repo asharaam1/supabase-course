@@ -16,6 +16,7 @@ function TaskManager({ session }: { session: Session }) {
   const [newDescription, setNewDescription] = useState("");
 
   const [taskImage, setTaskImage] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const fetchTasks = async () => {
     const { error, data } = await supabase
@@ -24,7 +25,7 @@ function TaskManager({ session }: { session: Session }) {
       .order("created_at", { ascending: true });
 
     if (error) {
-      console.error("Error adding task", error.message);
+      console.error("Error reading task: ", error.message);
       return;
     }
 
@@ -35,7 +36,7 @@ function TaskManager({ session }: { session: Session }) {
     const { error } = await supabase.from("tasks").delete().eq("id", id);
 
     if (error) {
-      console.error("Error deleting task", error.message);
+      console.error("Error deleting task: ", error.message);
       return;
     }
   };
@@ -47,20 +48,23 @@ function TaskManager({ session }: { session: Session }) {
       .eq("id", id);
 
     if (error) {
-      console.error("Error updating task", error.message);
+      console.error("Error updating task: ", error.message);
       return;
     }
-
-    // setNewTask({ title: "", description: "" });
   };
 
   const uploadImage = async (file: File): Promise<string | null> => {
     const filePath = `${file.name}-${Date.now()}`;
+
+    console.log(`Uploading file: ${file.name}, size: ${file.size} bytes`);
+
     const { error } = await supabase.storage
       .from("tasks-images")
       .upload(filePath, file);
+
     if (error) {
-      console.error("Error uploading image", error.message);
+      console.error("Error uploading image:", error.message);
+      alert(`Upload failed: ${error.message}`);
       return null;
     }
 
@@ -68,34 +72,62 @@ function TaskManager({ session }: { session: Session }) {
       .from("tasks-images")
       .getPublicUrl(filePath);
 
+    console.log(`Upload successful, public URL: ${data.publicUrl}`);
+    alert("Image uploaded successfully!");
     return data.publicUrl;
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setIsUploading(true);
 
-    let imageUrl: string | null = null;
+    let imageUrl: string = "";
     if (taskImage) {
-      imageUrl = await uploadImage(taskImage);
+      const uploadedUrl = await uploadImage(taskImage);
+      if (!uploadedUrl) {
+        alert("Image upload failed. Task not added.");
+        setIsUploading(false);
+        return;
+      }
+      imageUrl = uploadedUrl;
     }
 
-    const { error } = await supabase
+    console.log("Inserting task:", { ...newTask, image_url: imageUrl });
+
+    const { error, data } = await supabase
       .from("tasks")
-      .insert({ ...newTask, email: session.user.email, image_url: imageUrl })
+      .insert({ ...newTask, image_url: imageUrl })
       .select()
       .single();
 
     if (error) {
-      console.error("Error adding task", error.message);
+      console.error("Error adding task: ", error.message);
+      alert(`Error adding task: ${error.message}`);
+      setIsUploading(false);
       return;
     }
 
+    console.log("Task inserted successfully:", data);
+
     setNewTask({ title: "", description: "" });
+    setTaskImage(null);
+    setIsUploading(false);
+    alert("Task added successfully!");
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setTaskImage(e.target.files[0]);
+      const file = e.target.files[0];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        alert("File size exceeds 5MB. Please choose a smaller image.");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        alert("Please select a valid image file.");
+        return;
+      }
+      setTaskImage(file);
     }
   };
 
@@ -108,18 +140,14 @@ function TaskManager({ session }: { session: Session }) {
     channel
       .on(
         "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "tasks",
-        },
+        { event: "INSERT", schema: "public", table: "tasks" },
         (payload) => {
           const newTask = payload.new as Task;
           setTasks((prev) => [...prev, newTask]);
         }
       )
       .subscribe((status) => {
-        console.log("Subscription", status);
+        console.log("Subscription: ", status);
       });
   }, []);
 
@@ -146,9 +174,11 @@ function TaskManager({ session }: { session: Session }) {
           }
           style={{ width: "100%", marginBottom: "0.5rem", padding: "0.5rem" }}
         />
+
         <input type="file" accept="image/*" onChange={handleFileChange} />
-        <button type="submit" style={{ padding: "0.5rem 1rem" }}>
-          Add Task
+
+        <button type="submit" disabled={isUploading} style={{ padding: "0.5rem 1rem" }}>
+          {isUploading ? "Adding Task..." : "Add Task"}
         </button>
       </form>
 
@@ -167,10 +197,10 @@ function TaskManager({ session }: { session: Session }) {
             <div>
               <h3>{task.title}</h3>
               <p>{task.description}</p>
-              <img src={task.image_url} style={{ height: 70 }} />
+              {task.image_url && <img src={task.image_url} alt="Task image" style={{ height: 70 }} />}
               <div>
                 <textarea
-                  placeholder="updated task description..."
+                  placeholder="Updated description..."
                   onChange={(e) => setNewDescription(e.target.value)}
                 />
                 <button
