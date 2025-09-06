@@ -1,15 +1,16 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import "./App.css";
 import { supabase } from "./supabase-client";
+import { Session } from "@supabase/supabase-js";
 
 interface Task {
   id: number;
   title: string;
   description: string;
   created_at: string;
+  image_url: string;
 }
 
-function App() {
+function TaskManager({ session }: { session: Session }) {
   const [newTask, setNewTask] = useState({ title: "", description: "" });
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newDescription, setNewDescription] = useState("");
@@ -35,6 +36,7 @@ function App() {
 
     if (error) {
       console.error("Error deleting task", error.message);
+      return;
     }
   };
 
@@ -46,35 +48,42 @@ function App() {
 
     if (error) {
       console.error("Error updating task", error.message);
+      return;
     }
 
-    setNewTask({ title: "", description: "" });
+    // setNewTask({ title: "", description: "" });
   };
 
-  const uploadImage = async (file:File):Promise<string|null>=>{
-     const filePath = `${file.name}-${Date.now()}`
-     const {error }= await supabase.storage.from("tasks-images")
-     .upload(filePath,file)
-     if(error){
+  const uploadImage = async (file: File): Promise<string | null> => {
+    const filePath = `${file.name}-${Date.now()}`;
+    const { error } = await supabase.storage
+      .from("tasks-images")
+      .upload(filePath, file);
+    if (error) {
       console.error("Error uploading image", error.message);
-     }
-     const { data } = await supabase.storage
-     .from("tasks-images")
-     .getPublicUrl(filePath)
+      return null;
+    }
+
+    const { data } = await supabase.storage
+      .from("tasks-images")
+      .getPublicUrl(filePath);
+
     return data.publicUrl;
-  }; 
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    let imageUrl: string |null = null
-    if(taskImage){
-      imageUrl = await uploadImage(taskImage)
+    let imageUrl: string | null = null;
+    if (taskImage) {
+      imageUrl = await uploadImage(taskImage);
     }
-    const { error } = await supabase.from("tasks")
-    .insert({...newTask, email:sessionStorage.user.email, imageUrl: })
-    .select()
-    .single();
+
+    const { error } = await supabase
+      .from("tasks")
+      .insert({ ...newTask, email: session.user.email, image_url: imageUrl })
+      .select()
+      .single();
 
     if (error) {
       console.error("Error adding task", error.message);
@@ -86,7 +95,7 @@ function App() {
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setTaskImage(e.target.files[0])
+      setTaskImage(e.target.files[0]);
     }
   };
 
@@ -158,6 +167,7 @@ function App() {
             <div>
               <h3>{task.title}</h3>
               <p>{task.description}</p>
+              <img src={task.image_url} style={{ height: 70 }} />
               <div>
                 <textarea
                   placeholder="updated task description..."
@@ -184,4 +194,4 @@ function App() {
   );
 }
 
-export default App;
+export default TaskManager;
