@@ -154,8 +154,20 @@ function TaskManager({ session }: { session: Session }) {
   console.log(tasks);
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>
-      <h2>Task Manager CRUD</h2>
+    <div style={{
+      maxWidth: "90%",
+      margin: "0 auto",
+      padding: "1rem",
+      backgroundColor: "#f8f9fa",
+      minHeight: "100vh"
+    }}>
+      <h2 style={{
+        textAlign: "center",
+        color: "#2c3e50",
+        marginBottom: "1.5rem"
+      }}>
+        Task Manager
+      </h2>
 
       {/* Form to add a new task */}
       <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
