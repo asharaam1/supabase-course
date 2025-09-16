@@ -234,8 +234,9 @@ function TaskManager({ session }: { session: Session }) {
             disabled={isUploading}
             style={{
               padding: "0.5rem 1rem",
-              color:'#fff',
-              backgroundImage: 'linear-gradient(to right, #3636ddff, #1e83efff)',
+              color: "#fff",
+              backgroundImage:
+                "linear-gradient(to right, #3636ddff, #1e83efff)",
               border: "none",
               borderRadius: "4px",
               fontSize: "1rem",
@@ -248,49 +249,58 @@ function TaskManager({ session }: { session: Session }) {
         </form>
       </div>
       {/* List of Tasks */}
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {tasks.map((task, key) => (
-          <li
-            key={key}
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              padding: "1rem",
-              marginBottom: "0.5rem",
-            }}
-          >
-            <div>
-              <h3>{task.title}</h3>
-              <p>{task.description}</p>
-              {task.image_url && (
-                <img
-                  src={task.image_url}
-                  alt="Task image"
-                  style={{ height: 70 }}
-                />
-              )}
+      <div
+        style={{
+          border: "2px solid black",
+          borderRadius: "20px",
+          padding: "20px",
+          marginBottom: "1rem",
+        }}
+      >
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {tasks.map((task, key) => (
+            <li
+              key={key}
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                padding: "1rem",
+                marginBottom: "0.5rem",
+              }}
+            >
               <div>
-                <textarea
-                  placeholder="Updated description..."
-                  onChange={(e) => setNewDescription(e.target.value)}
-                />
-                <button
-                  style={{ padding: "0.5rem 1rem", marginRight: "0.5rem" }}
-                  onClick={() => updateTask(task.id)}
-                >
-                  Edit
-                </button>
-                <button
-                  style={{ padding: "0.5rem 1rem" }}
-                  onClick={() => deleteTask(task.id)}
-                >
-                  Delete
-                </button>
+                <h3>{task.title}</h3>
+                <p>{task.description}</p>
+                {task.image_url && (
+                  <img
+                    src={task.image_url}
+                    alt="Task image"
+                    style={{ height: 70 }}
+                  />
+                )}
+                <div>
+                  <textarea
+                    placeholder="Updated description..."
+                    onChange={(e) => setNewDescription(e.target.value)}
+                  />
+                  <button
+                    style={{ padding: "0.5rem 1rem", marginRight: "0.5rem" }}
+                    onClick={() => updateTask(task.id)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    style={{ padding: "0.5rem 1rem" }}
+                    onClick={() => deleteTask(task.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
