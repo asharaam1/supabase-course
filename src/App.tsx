@@ -285,8 +285,14 @@ function TaskManager({ session }: { session: Session }) {
                     />
                   </h4>
                 )}
-                <div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <textarea
+                    style={{}}
                     placeholder="Updated description..."
                     onChange={(e) => setNewDescription(e.target.value)}
                   />
