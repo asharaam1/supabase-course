@@ -269,14 +269,21 @@ function TaskManager({ session }: { session: Session }) {
               }}
             >
               <div>
-                <h3>{task.title}</h3>
-                <p>{task.description}</p>
+                <h3>Title: {task.title}</h3>
+                <p>
+                  {" "}
+                  <b>Description: </b> {task.description}
+                </p>
                 {task.image_url && (
-                  <img
-                    src={task.image_url}
-                    alt="Task image"
-                    style={{ height: 70 }}
-                  />
+                  <h4>
+                    {" "}
+                    Image:
+                    <img
+                      src={task.image_url}
+                      alt="Task image"
+                      style={{ height: 70 }}
+                    />
+                  </h4>
                 )}
                 <div>
                   <textarea
