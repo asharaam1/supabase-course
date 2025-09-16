@@ -215,12 +215,33 @@ function TaskManager({ session }: { session: Session }) {
             }}
           />
 
-          <input type="file" accept="image/*" onChange={handleFileChange} />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            style={{
+              marginBottom: "1rem",
+              padding: "0.5rem",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              width: "100%",
+              boxSizing: "border-box",
+            }}
+          />
 
           <button
             type="submit"
             disabled={isUploading}
-            style={{ padding: "0.5rem 1rem" }}
+            style={{
+              padding: "0.5rem 1rem",
+              color:'#fff',
+              backgroundImage: 'linear-gradient(to right, #3636ddff, #1e83efff)',
+              border: "none",
+              borderRadius: "4px",
+              fontSize: "1rem",
+              cursor: isUploading ? "not-allowed" : "pointer",
+              width: "100%",
+            }}
           >
             {isUploading ? "Adding Task..." : "Add Task"}
           </button>
