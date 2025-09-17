@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { supabase } from "./supabase-client";
 import { Session } from "@supabase/supabase-js";
-
+import bgImg from './assets/bgimgs.jpg'
 interface Task {
   id: number;
   title: string;
@@ -156,10 +156,11 @@ function TaskManager({ session }: { session: Session }) {
   return (
     <div
       style={{
-        maxWidth: "90%",
+        backgroundImage: `url(${bgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
         margin: "0 auto",
         padding: "1rem",
-        backgroundColor: "#f8f9fa",
         minHeight: "100vh",
       }}
     >
@@ -257,7 +258,7 @@ function TaskManager({ session }: { session: Session }) {
           marginBottom: "1rem",
         }}
       >
-        <h1 style={{textAlign:'center'}}>Your All Tasks</h1>
+        <h1 style={{ textAlign: "center" }}>Your All Tasks</h1>
         <ul style={{ listStyle: "none", padding: 0 }}>
           {tasks.map((task, key) => (
             <li
