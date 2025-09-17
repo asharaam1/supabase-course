@@ -262,8 +262,7 @@ function TaskManager({ session }: { session: Session }) {
             <li
               key={key}
               style={{
-                border: "1px solid #ccc",
-                borderRadius: "4px",
+                border: "1px solid #000",                borderRadius: "4px",
                 padding: "1rem",
                 marginBottom: "0.5rem",
               }}
@@ -274,6 +273,12 @@ function TaskManager({ session }: { session: Session }) {
                   {" "}
                   <b>Description: </b> {task.description}
                 </p>
+                <textarea
+                  value={newDescription}
+                  style={{}}
+                  placeholder="Updated description..."
+                  onChange={(e) => setNewDescription(e.target.value.trim())}
+                />
                 {task.image_url && (
                   <h4>
                     {" "}
@@ -289,21 +294,37 @@ function TaskManager({ session }: { session: Session }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
+                    gap: 10,
                   }}
                 >
-                  <textarea
-                    style={{}}
-                    placeholder="Updated description..."
-                    onChange={(e) => setNewDescription(e.target.value)}
-                  />
                   <button
-                    style={{ padding: "0.5rem 1rem", marginRight: "0.5rem" }}
+                    style={{
+                      padding: "0.5rem 1rem",
+                      color: "#fff",
+                      backgroundImage:
+                        "linear-gradient(to right, #3636ddff, #1e83efff)",
+                      border: "none",
+                      borderRadius: "4px",
+                      fontSize: "1rem",
+                      cursor: isUploading ? "not-allowed" : "pointer",
+                      width: "100%",
+                    }}
                     onClick={() => updateTask(task.id)}
                   >
                     Edit
                   </button>
                   <button
-                    style={{ padding: "0.5rem 1rem" }}
+                    style={{
+                      padding: "0.5rem 1rem",
+                      color: "#fff",
+                      backgroundImage:
+                        "linear-gradient(to right, #d72e2eff, #d6589dff)",
+                      border: "none",
+                      borderRadius: "4px",
+                      fontSize: "1rem",
+                      cursor: isUploading ? "not-allowed" : "pointer",
+                      width: "100%",
+                    }}
                     onClick={() => deleteTask(task.id)}
                   >
                     Delete
