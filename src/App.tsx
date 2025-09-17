@@ -257,14 +257,16 @@ function TaskManager({ session }: { session: Session }) {
           marginBottom: "1rem",
         }}
       >
+        <h1 style={{textAlign:'center'}}>Your All Tasks</h1>
         <ul style={{ listStyle: "none", padding: 0 }}>
           {tasks.map((task, key) => (
             <li
               key={key}
               style={{
-                border: "1px solid #000",                borderRadius: "4px",
+                border: "1px solid #000",
+                borderRadius: "20px",
                 padding: "1rem",
-                marginBottom: "0.5rem",
+                marginBottom: "1rem",
               }}
             >
               <div>
