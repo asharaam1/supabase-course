@@ -3,6 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebookSquare } from "react-icons/fa";
 import { useState } from "react";
 import "./Auth.css";
+import { supabase } from "./supabase-client";
 
 function Auth() {
   const [isLogIn, setIsLogIn] = useState(true);
@@ -10,8 +11,16 @@ function Auth() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLogIn) {
+      
+    } else {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        console.error("Error: ", error);
+      }
+    }
   };
 
   return (
