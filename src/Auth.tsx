@@ -14,11 +14,17 @@ function Auth() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isLogIn) {
-      
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) {
+        console.error("Error while signin: ", error.message);
+      }
     } else {
       const { error } = await supabase.auth.signUp({ email, password });
       if (error) {
-        console.error("Error: ", error);
+        console.error("Error while signup: ", error.message);
       }
     }
   };
@@ -38,7 +44,7 @@ function Auth() {
                 type="text"
                 placeholder="Enter you fullname"
                 value={name}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 className="auth-input"
                 onFocus={(e) =>
                   (e.target.style.border = "2px solid rgba(20, 67, 208, 1)")

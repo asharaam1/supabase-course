@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { supabase } from "./supabase-client";
+import bgImg from "./assets/bgimgs.jpg";
 import { Session } from "@supabase/supabase-js";
-import bgImg from './assets/bgimgs.jpg'
 interface Task {
   id: number;
   title: string;
@@ -92,11 +92,11 @@ function TaskManager({ session }: { session: Session }) {
       imageUrl = uploadedUrl;
     }
 
-    console.log("Inserting task:", { ...newTask, image_url: imageUrl });
+    // console.log("Inserting task:", { ...newTask, image_url: imageUrl });
 
     const { error, data } = await supabase
       .from("tasks")
-      .insert({ ...newTask, image_url: imageUrl })
+      .insert({ ...newTask, email: session.user.email, image_url: imageUrl })
       .select()
       .single();
 
